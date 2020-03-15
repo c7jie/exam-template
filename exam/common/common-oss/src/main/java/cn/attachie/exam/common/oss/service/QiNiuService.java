@@ -1,6 +1,9 @@
 package cn.attachie.exam.common.oss.service;
 
+import cn.attachie.exam.common.core.constant.CommonConstant;
+import cn.attachie.exam.common.core.utils.JsonMapper;
 import cn.attachie.exam.common.oss.config.QiNiuConfig;
+import cn.attachie.exam.common.oss.exceptions.OssException;
 import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;

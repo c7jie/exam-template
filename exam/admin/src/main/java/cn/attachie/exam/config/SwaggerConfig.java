@@ -1,4 +1,4 @@
-package cn.attachie.exam.common.config;
+package cn.attachie.exam.config;
 
 import cn.attachie.exam.common.security.constant.SecurityConstant;
 import io.swagger.annotations.ApiOperation;

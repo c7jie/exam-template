@@ -18,7 +18,6 @@ import cn.attachie.exam.common.security.mobile.MobileUser;
 import cn.attachie.exam.common.security.wx.WxUser;
 import cn.attachie.exam.user.api.dto.UserDto;
 import cn.attachie.exam.user.api.enums.IdentityType;
-import cn.attachie.exam.user.api.feign.UserServiceClient;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,7 +41,7 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
 
     private static final String GET_USER_INFO_FAIL = "get user information failed: ";
 
-    private final UserServiceClient userServiceClient;
+    //private final UserServiceClient userServiceClient;
 
     private final WxSessionService wxService;
 
@@ -57,12 +56,16 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
     @Override
     public UserDetails loadUserByIdentifierAndTenantCode(String tenantCode, String username) throws UsernameNotFoundException, TenantNotFoundException {
         long start = System.currentTimeMillis();
-        ResponseBean<UserVo> userVoResponseBean = userServiceClient.findUserByIdentifier(username, tenantCode);
-        if (!ResponseUtil.isSuccess(userVoResponseBean))
+        ResponseBean<UserVo> userVoResponseBean = null;
+        //
+        //todo: userServiceClient.findUserByIdentifier(username, tenantCode);
+        if (!ResponseUtil.isSuccess(userVoResponseBean)) {
             throw new ServiceException(GET_USER_INFO_FAIL + userVoResponseBean.getMsg());
+        }
         UserVo userVo = userVoResponseBean.getData();
-        if (userVo == null)
+        if (userVo == null) {
             throw new UsernameNotFoundException("user does not exist");
+        }
         return new CustomUserDetails(username, userVo.getCredential(), CommonConstant.STATUS_NORMAL.equals(userVo.getStatus()), getAuthority(userVo), userVo.getTenantCode(), userVo.getId(), start, LoginTypeEnum.PWD);
     }
 
@@ -79,28 +82,34 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
     @Override
     public UserDetails loadUserBySocialAndTenantCode(String tenantCode, String social, MobileUser mobileUser) throws UsernameNotFoundException {
         long start = System.currentTimeMillis();
-        ResponseBean<UserVo> userVoResponseBean = userServiceClient.findUserByIdentifier(social, IdentityType.PHONE_NUMBER.getValue(), tenantCode);
-        if (!ResponseUtil.isSuccess(userVoResponseBean))
+        ResponseBean<UserVo> userVoResponseBean = null;
+                // todo userServiceClient.findUserByIdentifier(social, IdentityType.PHONE_NUMBER.getValue(), tenantCode);
+        if (!ResponseUtil.isSuccess(userVoResponseBean)) {
             throw new ServiceException(GET_USER_INFO_FAIL + userVoResponseBean.getMsg());
+        }
         UserVo userVo = userVoResponseBean.getData();
         // 第一次登录
         if (userVo == null) {
             UserDto userDto = new UserDto();
             // 用户的基本信息
-            if (mobileUser != null)
+            if (mobileUser != null) {
                 BeanUtils.copyProperties(mobileUser, userDto);
+            }
             userDto.setIdentifier(social);
             userDto.setCredential(social);
             userDto.setIdentityType(IdentityType.PHONE_NUMBER.getValue());
             userDto.setLoginTime(DateUtils.asDate(LocalDateTime.now()));
             // 注册账号
-            ResponseBean<Boolean> response = userServiceClient.registerUser(userDto);
-            if (!ResponseUtil.isSuccess(response))
+            ResponseBean<Boolean> response = null; // todo:userServiceClient.registerUser(userDto);
+
+            if (!ResponseUtil.isSuccess(response)) {
                 throw new ServiceException("register failed: " + response.getMsg());
+            }
             // 重新获取用户信息
-            userVoResponseBean = userServiceClient.findUserByIdentifier(social, IdentityType.PHONE_NUMBER.getValue(), tenantCode);
-            if (!ResponseUtil.isSuccess(userVoResponseBean))
+            userVoResponseBean = null;//todo userServiceClient.findUserByIdentifier(social, IdentityType.PHONE_NUMBER.getValue(), tenantCode);
+            if (!ResponseUtil.isSuccess(userVoResponseBean)) {
                 throw new ServiceException(GET_USER_INFO_FAIL + userVoResponseBean.getMsg());
+            }
             userVo = userVoResponseBean.getData();
         }
         return new CustomUserDetails(userVo.getIdentifier(), userVo.getCredential(), CommonConstant.STATUS_NORMAL.equals(userVo.getStatus()), getAuthority(userVo), userVo.getTenantCode(), userVo.getId(), start, LoginTypeEnum.SMS);
@@ -122,31 +131,36 @@ public class CustomUserDetailsServiceImpl implements CustomUserDetailsService {
         long start = System.currentTimeMillis();
         // 根据code获取openId和sessionKey
         WxSession wxSession = wxService.code2Session(code);
-        if (wxSession == null)
+        if (wxSession == null) {
             throw new CommonException("get openId failed");
+        }
         // 获取用户信息
-        ResponseBean<UserVo> userVoResponseBean = userServiceClient.findUserByIdentifier(wxSession.getOpenId(), IdentityType.WE_CHAT.getValue(), tenantCode);
-        if (!ResponseUtil.isSuccess(userVoResponseBean))
+        ResponseBean<UserVo> userVoResponseBean =null;// todo userServiceClient.findUserByIdentifier(wxSession.getOpenId(), IdentityType.WE_CHAT.getValue(), tenantCode);
+        if (!ResponseUtil.isSuccess(userVoResponseBean)) {
             throw new ServiceException(GET_USER_INFO_FAIL + userVoResponseBean.getMsg());
+        }
         UserVo userVo = userVoResponseBean.getData();
         // 为空说明是第一次登录，需要将用户信息增加到数据库里
         if (userVo == null) {
             UserDto userDto = new UserDto();
             // 用户的基本信息
-            if (wxUser != null)
+            if (wxUser != null) {
                 BeanUtils.copyProperties(wxUser, userDto);
+            }
             userDto.setIdentifier(wxSession.getOpenId());
             userDto.setCredential(wxSession.getOpenId());
             userDto.setIdentityType(IdentityType.WE_CHAT.getValue());
             userDto.setLoginTime(DateUtils.asDate(LocalDateTime.now()));
             // 注册账号
-            ResponseBean<Boolean> response = userServiceClient.registerUser(userDto);
-            if (!ResponseUtil.isSuccess(response))
+            ResponseBean<Boolean> response =null;//todo: userServiceClient.registerUser(userDto);
+            if (!ResponseUtil.isSuccess(response)) {
                 throw new ServiceException("register failed: " + response.getMsg());
+            }
             // 重新获取用户信息
-            userVoResponseBean = userServiceClient.findUserByIdentifier(wxSession.getOpenId(), IdentityType.WE_CHAT.getValue(), tenantCode);
-            if (!ResponseUtil.isSuccess(userVoResponseBean))
+            userVoResponseBean =null;//todo: userServiceClient.findUserByIdentifier(wxSession.getOpenId(), IdentityType.WE_CHAT.getValue(), tenantCode);
+            if (!ResponseUtil.isSuccess(userVoResponseBean)) {
                 throw new ServiceException(GET_USER_INFO_FAIL + userVoResponseBean.getMsg());
+            }
             userVo = userVoResponseBean.getData();
         }
         return new CustomUserDetails(userVo.getIdentifier(), userVo.getCredential(), CommonConstant.STATUS_NORMAL.equals(userVo.getStatus()), getAuthority(userVo), userVo.getTenantCode(), userVo.getId(), start, LoginTypeEnum.WECHAT);

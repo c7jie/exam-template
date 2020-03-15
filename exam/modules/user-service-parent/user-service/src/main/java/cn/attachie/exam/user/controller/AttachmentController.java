@@ -104,8 +104,9 @@ public class AttachmentController extends BaseController {
     @Log("上传文件")
     public ResponseBean<Attachment> upload(@ApiParam(value = "要上传的文件", required = true) @RequestParam("file") MultipartFile file,
                                            Attachment attachment) {
-        if (file.isEmpty())
+        if (file.isEmpty()) {
             return new ResponseBean<>(new Attachment());
+        }
         return new ResponseBean<>(attachmentService.upload(file, attachment));
     }
 
@@ -125,8 +126,9 @@ public class AttachmentController extends BaseController {
             Attachment attachment = new Attachment();
             attachment.setId(id);
             attachment = attachmentService.get(attachment);
-            if (attachment == null)
+            if (attachment == null) {
                 throw new CommonException("Attachment does not exist");
+            }
             downloadUrl = attachmentService.download(attachment);
         } catch (Exception e) {
             log.error("Download attachment failed: {}", e.getMessage(), e);
@@ -151,8 +153,9 @@ public class AttachmentController extends BaseController {
         attachment.setId(id);
         attachment = attachmentService.get(attachment);
         boolean success = false;
-        if (attachment != null)
+        if (attachment != null) {
             success = attachmentService.delete(attachment) > 0;
+        }
         return new ResponseBean<>(success);
     }
 
@@ -171,8 +174,9 @@ public class AttachmentController extends BaseController {
     public ResponseBean<Boolean> deleteAllAttachments(@RequestBody Long[] ids) {
         boolean success = false;
         try {
-            if (ArrayUtils.isNotEmpty(ids))
+            if (ArrayUtils.isNotEmpty(ids)) {
                 success = attachmentService.deleteAll(ids) > 0;
+            }
         } catch (Exception e) {
             log.error("Delete attachment failed", e);
         }

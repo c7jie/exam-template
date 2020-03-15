@@ -8,7 +8,6 @@ import cn.attachie.exam.common.core.utils.ResponseUtil;
 import cn.attachie.exam.common.security.constant.SecurityConstant;
 import cn.attachie.exam.msc.api.constant.SmsConstant;
 import cn.attachie.exam.msc.api.dto.SmsDto;
-import cn.attachie.exam.msc.api.feign.MscServiceClient;
 import cn.hutool.core.util.RandomUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +29,7 @@ public class MobileService {
 
     private final RedisTemplate redisTemplate;
 
-    private final MscServiceClient mscServiceClient;
+    //private final MscServiceClient mscServiceClient;
 
     /**
      * 发送短信
@@ -50,9 +49,11 @@ public class MobileService {
         SmsDto smsDto = new SmsDto();
         smsDto.setReceiver(mobile);
         smsDto.setContent(String.format(SmsConstant.SMS_TEMPLATE, code));
-        ResponseBean<?> result = mscServiceClient.sendSms(smsDto);
-        if (!ResponseUtil.isSuccess(result))
+        ResponseBean<?> result = null;
+                //mscServiceClient.sendSms(smsDto); todo:
+        if (!ResponseUtil.isSuccess(result)) {
             throw new ServiceException("Send validate code error: " + result.getMsg());
+        }
         log.info("Send validate result: {}", result.getData());
         return new ResponseBean<>(Boolean.TRUE, code);
     }

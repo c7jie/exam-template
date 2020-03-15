@@ -3,6 +3,7 @@ package cn.attachie.exam.common.core.vo;
 
 import cn.attachie.exam.common.core.persistence.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 附件VO
@@ -10,6 +11,7 @@ import lombok.Data;
  * @author tangyi
  * @date 2019/1/1 20:40
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class AttachmentVo extends BaseEntity<AttachmentVo> {
 

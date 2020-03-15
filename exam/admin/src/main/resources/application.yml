@@ -12,3 +12,35 @@ server:
     max-threads: 800
     # Tomcat启动初始化的线程数，默认值25
     min-spare-threads: 30
+spring:
+  datasource:
+    name: druidDataSource
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver #com.mysql.jdbc.Driver 报错已弃用
+      url: jdbc:mysql://cdb-hj23c7cc.bj.tencentcdb.com:10188/test?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      username: base_demo
+      password: Qc%jqNS$7u
+      filters: stat,wall,config
+      # 最大连接数
+      max-active: 100
+      # 初始化大小
+      initial-size: 1
+      # 最小连接数
+      min-idle: 1
+      # 等待超时时间
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+      validation-query: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      max-open-prepared-statements: 50
+
+# 集群ID生成配置
+cluster:
+  workId: 1
+  dataCenterId: 1

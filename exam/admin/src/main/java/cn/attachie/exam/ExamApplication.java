@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 /**
  * @author attaching
  */
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = "cn.attachie.exam")
 public class ExamApplication {
 
     public static void main(String[] args) {

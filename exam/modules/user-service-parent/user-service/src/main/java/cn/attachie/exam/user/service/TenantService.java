@@ -6,6 +6,7 @@ import cn.attachie.exam.common.core.utils.SysUtil;
 import cn.attachie.exam.common.security.constant.SecurityConstant;
 import cn.attachie.exam.user.api.constant.TenantConstant;
 import cn.attachie.exam.user.api.enums.IdentityType;
+import cn.attachie.exam.user.api.module.*;
 import cn.attachie.exam.user.mapper.TenantMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -70,7 +71,7 @@ public class TenantService extends CrudService<TenantMapper, Tenant> {
      * @author tangyi
      * @date 2019/05/26 10:28
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "tenant", key = "#tenant.tenantCode")
     @Override
     public int update(Tenant tenant) {
@@ -114,7 +115,7 @@ public class TenantService extends CrudService<TenantMapper, Tenant> {
      * @author tangyi
      * @date 2019/05/26 10:28
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "tenant", key = "#tenant.tenantCode")
     @Override
     public int delete(Tenant tenant) {

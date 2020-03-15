@@ -3,6 +3,7 @@ package cn.attachie.exam.common.core.vo;
 
 import cn.attachie.exam.common.core.persistence.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * @author tangyi
  * @date 2018-08-25 13:57
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class UserVo extends BaseEntity<UserVo> {
 

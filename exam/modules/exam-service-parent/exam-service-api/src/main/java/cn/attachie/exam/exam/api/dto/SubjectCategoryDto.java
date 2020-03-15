@@ -4,11 +4,13 @@ import cn.attachie.exam.common.core.persistence.TreeEntity;
 import cn.attachie.exam.exam.api.module.SubjectCategory;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author tangyi
  * @date 2018/12/4 22:04
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SubjectCategoryDto extends TreeEntity<SubjectCategoryDto> {
 

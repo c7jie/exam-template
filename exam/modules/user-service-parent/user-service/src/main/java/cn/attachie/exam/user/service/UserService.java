@@ -16,6 +16,7 @@ import cn.attachie.exam.user.api.constant.RoleConstant;
 import cn.attachie.exam.user.api.dto.UserDto;
 import cn.attachie.exam.user.api.dto.UserInfoDto;
 import cn.attachie.exam.user.api.enums.IdentityType;
+import cn.attachie.exam.user.api.module.*;
 import cn.attachie.exam.user.mapper.RoleMapper;
 import cn.attachie.exam.user.mapper.UserMapper;
 import cn.attachie.exam.user.mapper.UserRoleMapper;
@@ -75,7 +76,7 @@ public class UserService extends CrudService<UserMapper, User> {
      * @author tangyi
      * @date 2019/07/03 12:17:44
      */
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     public int createUser(UserDto userDto) {
         int update;
         User user = new User();
@@ -91,11 +92,13 @@ public class UserService extends CrudService<UserMapper, User> {
             userAuths.setCommonValue(user.getCreator(), user.getApplicationCode(), user.getTenantCode());
             userAuths.setUserId(user.getId());
             userAuths.setIdentifier(userDto.getIdentifier());
-            if (userDto.getIdentityType() == null)
+            if (userDto.getIdentityType() == null) {
                 userAuths.setIdentityType(IdentityType.PASSWORD.getValue());
+            }
             // 默认密码为123456
-            if (StringUtils.isBlank(userDto.getCredential()))
+            if (StringUtils.isBlank(userDto.getCredential())) {
                 userDto.setCredential(CommonConstant.DEFAULT_PASSWORD);
+            }
             userAuths.setCredential(encoder.encode(userDto.getCredential()));
             update = userAuthsService.insert(userAuths);
             // 分配默认角色
@@ -113,7 +116,7 @@ public class UserService extends CrudService<UserMapper, User> {
      * @date 2018/10/30 12:43
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int insert(User user) {
         // 保存角色
         if (CollectionUtils.isNotEmpty(user.getRole())) {
@@ -143,17 +146,20 @@ public class UserService extends CrudService<UserMapper, User> {
         String tenantCode = userVo.getTenantCode(), identifier = userVo.getIdentifier();
         // 根据唯一标识查询账号信息
         UserAuths userAuths = new UserAuths();
-        if (userVo.getIdentityType() != null)
+        if (userVo.getIdentityType() != null) {
             userAuths.setIdentityType(userVo.getIdentityType());
+        }
         userAuths.setIdentifier(userVo.getIdentifier());
         userAuths.setTenantCode(tenantCode);
         userAuths = userAuthsService.getByIdentifier(userAuths);
-        if (userAuths == null)
+        if (userAuths == null) {
             throw new CommonException("Identifier " + identifier + "does not exist");
+        }
         // 根据用户id查询用户详细信息
         User user = this.get(userAuths.getUserId());
-        if (user == null)
+        if (user == null) {
             throw new CommonException("Get user info failed");
+        }
         // 查询用户的角色信息
         List<Role> roles = this.getUserRoles(user);
         // 根据角色查询权限
@@ -204,8 +210,9 @@ public class UserService extends CrudService<UserMapper, User> {
             for (Role role : roles) {
                 // 根据角色查找菜单
                 List<Menu> roleMenuList = menuService.findMenuByRole(role.getRoleCode(), user.getTenantCode());
-                if (CollectionUtils.isNotEmpty(roleMenuList))
+                if (CollectionUtils.isNotEmpty(roleMenuList)) {
                     menuList.addAll(roleMenuList);
+                }
             }
         }
         if (CollectionUtils.isNotEmpty(menuList)) {
@@ -264,7 +271,7 @@ public class UserService extends CrudService<UserMapper, User> {
      * @author tangyi
      * @date 2018/8/26 15:15
      */
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @CacheEvict(value = "user", key = "#id")
     public boolean updateUser(Long id, UserDto userDto) {
         User user = new User();
@@ -298,7 +305,7 @@ public class UserService extends CrudService<UserMapper, User> {
      * @return int
      */
     @Override
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @CacheEvict(value = "user", key = "#user.id")
     public int update(User user) {
         return super.update(user);
@@ -312,20 +319,23 @@ public class UserService extends CrudService<UserMapper, User> {
      * @author tangyi
      * @date 2019/07/03 12:26:24
      */
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @CacheEvict(value = "user", key = "#userDto.identifier")
     public int updatePassword(UserDto userDto) {
         userDto.setTenantCode(SysUtil.getTenantCode());
-        if (StringUtils.isBlank(userDto.getNewPassword()))
+        if (StringUtils.isBlank(userDto.getNewPassword())) {
             throw new CommonException("新密码不能为空.");
-        if (StringUtils.isBlank(userDto.getIdentifier()))
+        }
+        if (StringUtils.isBlank(userDto.getIdentifier())) {
             throw new CommonException("用户名不能为空.");
+        }
         UserAuths userAuths = new UserAuths();
         userAuths.setIdentifier(userDto.getIdentifier());
         userAuths.setTenantCode(userDto.getTenantCode());
         userAuths = userAuthsService.getByIdentifier(userAuths);
-        if (userAuths == null)
+        if (userAuths == null) {
             throw new CommonException("账号不存在.");
+        }
         if (!encoder.matches(userDto.getOldPassword(), userAuths.getCredential())) {
             throw new CommonException("新旧密码不匹配");
         } else {
@@ -343,17 +353,19 @@ public class UserService extends CrudService<UserMapper, User> {
      * @author tangyi
      * @date 2019/06/21 18:14
      */
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @CacheEvict(value = "user", key = "#userDto.identifier")
     public int updateAvatar(UserDto userDto) {
         User user = this.get(userDto.getId());
-        if (user == null)
+        if (user == null) {
             throw new CommonException("用户不存在.");
+        }
         // 先删除旧头像
         if (user.getAvatarId() != null) {
             Attachment attachment = attachmentService.get(user.getAvatarId());
-            if (attachment != null)
+            if (attachment != null) {
                 attachmentService.delete(attachment);
+            }
         }
         user.setAvatarId(userDto.getAvatarId());
         return super.update(user);
@@ -373,16 +385,19 @@ public class UserService extends CrudService<UserMapper, User> {
     public UserVo findUserByIdentifier(Integer identityType, String identifier, String tenantCode) {
         UserAuths userAuths = new UserAuths();
         userAuths.setIdentifier(identifier);
-        if (identityType != null)
+        if (identityType != null) {
             userAuths.setIdentityType(IdentityType.matchByType(identityType).getValue());
+        }
         userAuths.setTenantCode(tenantCode);
         userAuths = userAuthsService.getByIdentifier(userAuths);
-        if (userAuths == null)
+        if (userAuths == null) {
             return null;
+        }
         // 查询用户信息
         User user = this.get(userAuths.getUserId());
-        if (user == null)
+        if (user == null) {
             return null;
+        }
         // 查询用户角色
         List<Role> roles = this.getUserRoles(user);
         UserVo userVo = new UserVo();
@@ -441,7 +456,7 @@ public class UserService extends CrudService<UserMapper, User> {
      * @param user user
      * @return int
      */
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @Override
     @CacheEvict(value = "user", key = "#user.id")
     public int delete(User user) {
@@ -462,7 +477,7 @@ public class UserService extends CrudService<UserMapper, User> {
      * @author tangyi
      * @date 2019/07/04 11:44:45
      */
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @Override
     @CacheEvict(value = "user", allEntries = true)
     public int deleteAll(Long[] ids) {
@@ -523,14 +538,15 @@ public class UserService extends CrudService<UserMapper, User> {
      * @author tangyi
      * @date 2019/07/03 13:27:39
      */
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @CacheEvict(value = "user", key = "#userDto.identifier")
     public boolean resetPassword(UserDto userDto) {
         UserAuths userAuths = new UserAuths();
         userAuths.setIdentifier(userDto.getIdentifier());
         userAuths = userAuthsService.getByIdentifier(userAuths);
-        if (userAuths == null)
+        if (userAuths == null) {
             throw new CommonException("账号不存在.");
+        }
         // 重置密码为123456
         userAuths.setCredential(encoder.encode(CommonConstant.DEFAULT_PASSWORD));
         return userAuthsService.update(userAuths) > 0;
@@ -544,12 +560,13 @@ public class UserService extends CrudService<UserMapper, User> {
      * @author tangyi
      * @date 2019/07/03 13:30:03
      */
-    @Transactional
+    @Transactional(rollbackFor=Exception.class)
     @CacheEvict(value = "user", key = "#userDto.identifier")
     public boolean register(UserDto userDto) {
         boolean success = false;
-        if (userDto.getIdentityType() == null)
+        if (userDto.getIdentityType() == null) {
             userDto.setIdentityType(IdentityType.PASSWORD.getValue());
+        }
         // 解密
         String password = this.decryptCredential(userDto.getCredential(), userDto.getIdentityType());
         User user = new User();
@@ -563,8 +580,9 @@ public class UserService extends CrudService<UserMapper, User> {
             attachment.setCommonValue(userDto.getIdentifier(), SysUtil.getSysCode(), SysUtil.getTenantCode());
             attachment.setBusiType(AttachmentConstant.BUSI_TYPE_USER_AVATAR);
             attachment.setPreviewUrl(userDto.getAvatarUrl());
-            if (attachmentService.insert(attachment) > 0)
+            if (attachmentService.insert(attachment) > 0) {
                 user.setAvatarId(attachment.getId());
+            }
         }
         // 保存用户基本信息
         if (this.insert(user) > 0) {
@@ -573,8 +591,9 @@ public class UserService extends CrudService<UserMapper, User> {
             userAuths.setCommonValue(userDto.getIdentifier(), user.getApplicationCode(), user.getTenantCode());
             userAuths.setUserId(user.getId());
             userAuths.setIdentifier(userDto.getIdentifier());
-            if (userDto.getIdentityType() != null)
+            if (userDto.getIdentityType() != null) {
                 userAuths.setIdentityType(userDto.getIdentityType());
+            }
             // 设置密码
             userAuths.setCredential(encoder.encode(password));
             userAuthsService.insert(userAuths);
@@ -594,11 +613,13 @@ public class UserService extends CrudService<UserMapper, User> {
      */
     private String decryptCredential(String encoded, Integer identityType) {
         // 返回默认密码
-        if (StringUtils.isBlank(encoded))
+        if (StringUtils.isBlank(encoded)) {
             return CommonConstant.DEFAULT_PASSWORD;
+        }
         // 微信、手机号注册不需要解密
-        if (IdentityType.WE_CHAT.getValue().equals(identityType) || IdentityType.PHONE_NUMBER.getValue().equals(identityType))
+        if (IdentityType.WE_CHAT.getValue().equals(identityType) || IdentityType.PHONE_NUMBER.getValue().equals(identityType)) {
             return encoded;
+        }
         // 解密密码
         try {
             encoded = SysUtil.decryptAES(encoded, sysProperties.getKey()).trim();

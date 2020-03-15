@@ -3,6 +3,7 @@ package cn.attachie.exam.common.security.mobile;
 import cn.attachie.exam.common.security.core.CustomUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
@@ -19,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * @author tangyi
  * @date 2019/6/22 21:26
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class MobileSecurityConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 

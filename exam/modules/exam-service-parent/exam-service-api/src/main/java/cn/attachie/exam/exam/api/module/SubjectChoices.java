@@ -3,6 +3,7 @@ package cn.attachie.exam.exam.api.module;
 import cn.attachie.exam.common.core.persistence.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * @author tangyi
  * @date 2018/11/8 20:53
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class SubjectChoices extends BaseEntity<SubjectChoices> {
 

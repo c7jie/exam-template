@@ -3,6 +3,7 @@ package cn.attachie.exam.common.core.model;
 
 import cn.attachie.exam.common.core.persistence.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotBlank;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotBlank;
  * @author tangyi
  * @date 2018/10/31 20:29
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class Log extends BaseEntity<Log> {
 

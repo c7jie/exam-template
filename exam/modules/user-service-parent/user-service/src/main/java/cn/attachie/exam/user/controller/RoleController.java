@@ -141,8 +141,9 @@ public class RoleController extends BaseController {
         if (role.getId() != null) {
             role = roleService.get(role);
             // 保存角色菜单关系
-            if (role != null && StringUtils.isNotBlank(menuIds))
+            if (role != null && StringUtils.isNotBlank(menuIds)) {
                 success = roleMenuService.saveRoleMenus(role.getId(), Stream.of(menuIds.split(",")).map(Long::parseLong).collect(Collectors.toList())) > 0;
+            }
         }
         return new ResponseBean<>(success);
     }
@@ -202,8 +203,9 @@ public class RoleController extends BaseController {
     public ResponseBean<Boolean> deleteAllRoles(@RequestBody Long[] ids) {
         boolean success = false;
         try {
-            if (ArrayUtils.isNotEmpty(ids))
+            if (ArrayUtils.isNotEmpty(ids)) {
                 success = roleService.deleteAll(ids) > 0;
+            }
         } catch (Exception e) {
             log.error("Delete role failed", e);
         }

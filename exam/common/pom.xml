@@ -12,7 +12,6 @@
     <artifactId>common</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>common-config</module>
         <module>common-security</module>
         <module>common-log</module>
         <module>common-core</module>

@@ -7,7 +7,6 @@ import cn.attachie.exam.common.core.utils.SysUtil;
 import cn.attachie.exam.common.core.vo.UserVo;
 import cn.attachie.exam.common.core.web.BaseController;
 import cn.attachie.exam.exam.api.dto.ExaminationDashboardDto;
-import cn.attachie.exam.exam.api.feign.ExaminationServiceClient;
 import cn.attachie.exam.user.api.dto.DashboardDto;
 import cn.attachie.exam.user.service.TenantService;
 import cn.attachie.exam.user.service.UserService;
@@ -31,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/dashboard")
 public class DashboardController extends BaseController {
 
-    private final ExaminationServiceClient examinationService;
+    //private final ExaminationServiceClient examinationService;
 
     private final UserService userService;
 
@@ -56,17 +55,22 @@ public class DashboardController extends BaseController {
         // 租户数量
         dashboardDto.setTenantCount(tenantService.tenantCount().toString());
         // 查询考试数量
-        ResponseBean<ExaminationDashboardDto> dashboardData = examinationService.findExaminationDashboardData(tenantCode);
-        if (!ResponseUtil.isSuccess(dashboardData))
+        ResponseBean<ExaminationDashboardDto> dashboardData = null; //todo:
+                //examinationService.findExaminationDashboardData(tenantCode);
+        if (!ResponseUtil.isSuccess(dashboardData)) {
             throw new ServiceException("Get examination dashboard data failed: " + dashboardData.getMsg());
+        }
         ExaminationDashboardDto examinationDashboardDto = dashboardData.getData();
         if (examinationDashboardDto != null) {
-            if (examinationDashboardDto.getExaminationCount() != null)
+            if (examinationDashboardDto.getExaminationCount() != null) {
                 dashboardDto.setExaminationNumber(examinationDashboardDto.getExaminationCount().toString());
-            if (examinationDashboardDto.getExamUserCount() != null)
+            }
+            if (examinationDashboardDto.getExamUserCount() != null) {
                 dashboardDto.setExamUserNumber(examinationDashboardDto.getExamUserCount().toString());
-            if (examinationDashboardDto.getExaminationRecordCount() != null)
+            }
+            if (examinationDashboardDto.getExaminationRecordCount() != null) {
                 dashboardDto.setExaminationRecordNumber(examinationDashboardDto.getExaminationRecordCount().toString());
+            }
         }
         return new ResponseBean<>(dashboardDto);
     }
@@ -82,9 +86,11 @@ public class DashboardController extends BaseController {
     @ApiOperation(value = "过去一周考试记录数", notes = "过去一周考试记录数")
     public ResponseBean<DashboardDto> examRecordTendency(@RequestParam Integer pastDays) {
         DashboardDto dashboardDto = new DashboardDto();
-        ResponseBean<ExaminationDashboardDto> examRecordTendencyData = examinationService.findExamRecordTendencyData(SysUtil.getTenantCode(), pastDays);
-        if (!ResponseUtil.isSuccess(examRecordTendencyData))
+        ResponseBean<ExaminationDashboardDto> examRecordTendencyData = null;//todo:
+        //examinationService.findExamRecordTendencyData(SysUtil.getTenantCode(), pastDays);
+        if (!ResponseUtil.isSuccess(examRecordTendencyData)) {
             throw new ServiceException("Get examination record tendency data failed: " + examRecordTendencyData.getMsg());
+        }
         dashboardDto.setExamRecordDate(examRecordTendencyData.getData().getExamRecordDate());
         dashboardDto.setExamRecordData(examRecordTendencyData.getData().getExamRecordData());
         return new ResponseBean<>(dashboardDto);

@@ -4,7 +4,7 @@ import cn.attachie.exam.common.core.exceptions.ServiceException;
 import cn.attachie.exam.common.core.exceptions.TenantNotFoundException;
 import cn.attachie.exam.common.core.model.ResponseBean;
 import cn.attachie.exam.common.core.utils.ResponseUtil;
-import cn.attachie.exam.user.api.feign.UserServiceClient;
+//import cn.attachie.exam.user.api.feign.UserServiceClient;
 import cn.attachie.exam.user.api.module.Tenant;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ValidateTenantAspect {
 
-    private final UserServiceClient userServiceClient;
+    //private final UserServiceClient userServiceClient;
 
     @Before("execution(* cn.attachie.exam.auth.security.CustomUserDetailsServiceImpl.load*(..)) && args(tenantCode,..)")
     public void validateTenantCode(String tenantCode) throws TenantNotFoundException {
@@ -31,7 +31,7 @@ public class ValidateTenantAspect {
         if (StringUtils.isBlank(tenantCode))
             throw new TenantNotFoundException("tenantCode cant not be null");
         // 先获取租户信息
-        ResponseBean<Tenant> tenantResponseBean = userServiceClient.findTenantByTenantCode(tenantCode);
+        ResponseBean<Tenant> tenantResponseBean = null;//todo: userServiceClient.findTenantByTenantCode(tenantCode);
         if (!ResponseUtil.isSuccess(tenantResponseBean))
             throw new ServiceException("get tenant info failed: " + tenantResponseBean.getMsg());
         Tenant tenant = tenantResponseBean.getData();

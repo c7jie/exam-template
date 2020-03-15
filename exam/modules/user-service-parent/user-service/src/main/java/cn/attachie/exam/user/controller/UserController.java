@@ -14,6 +14,8 @@ import cn.attachie.exam.common.security.annotations.AdminTenantTeacherAuthorizat
 import cn.attachie.exam.common.security.constant.SecurityConstant;
 import cn.attachie.exam.user.api.dto.UserDto;
 import cn.attachie.exam.user.api.dto.UserInfoDto;
+import cn.attachie.exam.user.api.module.*;
+import cn.attachie.exam.user.api.module.User;
 import cn.attachie.exam.user.excel.listener.UserImportListener;
 import cn.attachie.exam.user.excel.model.UserExcelModel;
 import cn.attachie.exam.user.service.DeptService;
@@ -85,8 +87,9 @@ public class UserController extends BaseController {
     public ResponseBean<UserInfoDto> userInfo(@RequestParam(required = false) String identityType, OAuth2Authentication authentication) {
         try {
             UserVo userVo = new UserVo();
-            if (StringUtils.isNotEmpty(identityType))
+            if (StringUtils.isNotEmpty(identityType)) {
                 userVo.setIdentityType(Integer.valueOf(identityType));
+            }
             userVo.setIdentifier(authentication.getName());
             userVo.setTenantCode(SysUtil.getTenantCode());
             return new ResponseBean<>(userService.findUserInfo(userVo));
@@ -305,8 +308,9 @@ public class UserController extends BaseController {
                 user.setTenantCode(SysUtil.getTenantCode());
                 users = userService.findList(user);
             }
-            if (CollectionUtils.isEmpty(users))
+            if (CollectionUtils.isEmpty(users)) {
                 throw new CommonException("无用户数据.");
+            }
             // 查询用户授权信息
             List<UserAuths> userAuths = userAuthsService.getListByUsers(users);
             // 组装数据，转成dto
@@ -363,8 +367,9 @@ public class UserController extends BaseController {
     public ResponseBean<Boolean> deleteAllUsers(@RequestBody Long[] ids) {
         try {
             boolean success = Boolean.FALSE;
-            if (ArrayUtils.isNotEmpty(ids))
+            if (ArrayUtils.isNotEmpty(ids)) {
                 success = userService.deleteAll(ids) > 0;
+            }
             return new ResponseBean<>(success);
         } catch (Exception e) {
             log.error("Delete user failed", e);

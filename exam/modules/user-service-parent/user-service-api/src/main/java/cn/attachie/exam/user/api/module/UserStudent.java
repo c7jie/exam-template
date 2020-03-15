@@ -2,6 +2,7 @@ package cn.attachie.exam.user.api.module;
 
 import cn.attachie.exam.common.core.persistence.BaseEntity;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 用户学生关联关系，一个用户可以绑定多个学生
@@ -9,6 +10,7 @@ import lombok.Data;
  * @author tangyi
  * @date 2019/07/09 15:23
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class UserStudent extends BaseEntity<UserStudent> {
 

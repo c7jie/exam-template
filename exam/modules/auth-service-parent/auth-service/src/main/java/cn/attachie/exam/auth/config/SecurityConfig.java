@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerEndpointsConfiguration;
+
 import org.springframework.security.web.access.AccessDeniedHandler;
 
 /**
@@ -54,7 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // accessDeniedHandler
         http.exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler());
+                .accessDeniedHandler(accessOAuthDeniedHandler());
     }
 
     @Bean
@@ -84,7 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
+    public AccessDeniedHandler accessOAuthDeniedHandler() {
         return new CustomOAuth2AccessDeniedHandler();
     }
 }

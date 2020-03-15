@@ -4,6 +4,7 @@ import cn.attachie.exam.common.core.persistence.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 考试题目关联
@@ -11,6 +12,7 @@ import lombok.Data;
  * @author tangyi
  * @date 2019/6/16 13:46
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ExaminationSubject extends BaseEntity<ExaminationSubject> {

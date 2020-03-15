@@ -1,6 +1,7 @@
 package cn.attachie.exam.common.core.persistence;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * @author tangyi
  * @date 2018-09-13 20:40
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class TreeEntity<T> extends BaseEntity<T> {
 

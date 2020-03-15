@@ -4,7 +4,7 @@ import cn.attachie.exam.common.core.constant.CommonConstant;
 import cn.attachie.exam.common.core.exceptions.CommonException;
 import cn.attachie.exam.common.core.service.CrudService;
 import cn.attachie.exam.common.core.utils.SysUtil;
-import cn.attachie.exam.oss.service.QiNiuService;
+import cn.attachie.exam.common.oss.service.QiNiuService;
 import cn.attachie.exam.user.api.module.Attachment;
 import cn.attachie.exam.user.mapper.AttachmentMapper;
 import lombok.AllArgsConstructor;
@@ -140,8 +140,9 @@ public class AttachmentService extends CrudService<AttachmentMapper, Attachment>
         attachment = this.get(attachment);
         if (attachment != null) {
             String preview = attachment.getPreviewUrl();
-            if (!preview.startsWith("http"))
+            if (!preview.startsWith("http")) {
                 preview = "http://" + preview;
+            }
             log.debug("GetPreviewUrl id: {}, preview url: {}", attachment.getId(), preview);
             return preview;
         }

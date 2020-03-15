@@ -3,6 +3,7 @@ package cn.attachie.exam.user.api.module;
 import cn.attachie.exam.common.core.persistence.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
@@ -15,6 +16,7 @@ import java.util.List;
  * @author tangyi
  * @date 2018-08-25 15:30
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class User extends BaseEntity<User> {
 

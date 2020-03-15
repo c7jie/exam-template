@@ -1,5 +1,6 @@
 package cn.attachie.exam.common.oss.config;
 
+import com.github.tobato.fastdfs.FdfsClientConfig;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableMBeanExport;
