@@ -64,7 +64,7 @@
         <jjwt.version>0.9.0</jjwt.version>
         <qiniu.version>[7.2.0, 7.2.99]</qiniu.version>
         <easyexcel.version>2.1.4</easyexcel.version>
-        <guava.version>28.2-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <aspectj.version>1.9.5</aspectj.version>
 
         <slf4j.version>1.7.6</slf4j.version>
