@@ -34,7 +34,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <!-- spring boot、spring cloud -->
-        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+        <spring-boot.version>2.5.12</spring-boot.version>
         <spring-boot-admin.version>2.2.0-SNAPSHOT</spring-boot-admin.version>
         <spring-security-oauth2-autoconfigure.version>2.1.2.RELEASE</spring-security-oauth2-autoconfigure.version>
         <spring-security.version>5.2.2.RELEASE</spring-security.version>
